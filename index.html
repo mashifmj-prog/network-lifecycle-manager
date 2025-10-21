@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Openserve EOSL Risk Management Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .risk-critical { border-left-color: #dc2626; background-color: #fef2f2; }
+        .risk-high { border-left-color: #ea580c; background-color: #fff7ed; }
+        .risk-medium { border-left-color: #d97706; background-color: #fffbeb; }
+        .risk-low { border-left-color: #16a34a; background-color: #f0fdf4; }
+        .glow-critical { box-shadow: 0 0 10px rgba(220, 38, 38, 0.3); }
+        .glow-high { box-shadow: 0 0 8px rgba(234, 88, 12, 0.3); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div id="app" class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">EOSL Risk Intelligence Platform</h1>
+                    <p class="text-gray-600">Managing End-of-Service-Life Network Vulnerabilities</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">Demo Environment</div>
+                    <div class="text-xs text-gray-400">All data is synthetic for demonstration</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Executive Summary -->
+        <section class="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white rounded-lg shadow p-6 text-center">
+                <div class="text-2xl font-bold text-blue-600" id="totalDevices">0</div>
+                <div class="text-gray-600">Total Devices</div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 text-center">
+                <div class="text-2xl font-bold text-orange-600" id="eoslDevices">0</div>
+                <div class="text-gray-600">EOSL Devices</div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 text-center">
+                <div class="text-2xl font-bold text-red-600" id="criticalDevices">0</div>
+                <div class="text-gray-600">Critical Risk</div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 text-center">
+                <div class="text-2xl font-bold text-purple-600" id="avgRiskScore">0.0</div>
+                <div class="text-gray-600">Avg Risk Score</div>
+            </div>
+        </section>
+
+        <!-- Charts -->
+        <section class="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold mb-4">Risk Distribution</h3>
+                <canvas id="riskChart" height="200"></canvas>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold mb-4">EOSL Timeline</h3>
+                <canvas id="eoslChart" height="200"></canvas>
+            </div>
+        </section>
+
+        <!-- Controls -->
+        <section class="mb-6 bg-white rounded-lg shadow p-4">
+            <div class="flex flex-wrap gap-4 items-center">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Filter by Risk Level</label>
+                    <select id="riskFilter" class="border border-gray-300 rounded-md px-3 py-2 text-sm">
+                        <option value="all">All Risks</option>
+                        <option value="critical">Critical Only</option>
+                        <option value="high">High+</option>
+                        <option value="medium">Medium+</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Device Type</label>
+                    <select id="typeFilter" class="border border-gray-300 rounded-md px-3 py-2 text-sm">
+                        <option value="all">All Types</option>
+                        <option value="core_router">Core Routers</option>
+                        <option value="firewall">Firewalls</option>
+                        <option value="aggregation_switch">Switches</option>
+                    </select>
+                </div>
+                <div class="flex-1"></div>
+                <button onclick="generateNewData()" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
+                    🔄 Generate New Mock Data
+                </button>
+            </div>
+        </section>
+
+        <!-- Device List -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Network Devices</h2>
+            <div id="deviceList" class="space-y-4">
+                <!-- Devices will be populated here -->
+            </div>
+        </section>
+
+        <!-- Risk Analysis -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Risk Analysis & Recommendations</h2>
+            <div id="riskAnalysis" class="bg-white rounded-lg shadow p-6">
+                <!-- Analysis will be populated here -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Mock Data Generator
+        class EOSLDataGenerator {
+            constructor() {
+                this.locations = ['JHB-Core', 'CPT-Edge', 'DBN-Aggregation', 'PTA-DC', 'BFN-Access'];
+                this.deviceTypes = [
+                    { type: 'core_router', name: 'Core Router', criticality: 5 },
+                    { type: 'firewall', name: 'Firewall', criticality: 5 },
+                    { type: 'aggregation_switch', name: 'Aggregation Switch', criticality: 4 },
+                    { type: 'access_device', name: 'Access Device', criticality: 3 },
+                    { type: 'load_balancer', name: 'Load Balancer', criticality: 4 }
+                ];
+                this.vendors = ['Cisco', 'Juniper', 'Palo Alto', 'Fortinet', 'Nokia'];
+            }
+
+            generateDeviceId(type) {
+                const prefixes = {
+                    'core_router': 'COR', 'firewall': 'FW', 
+                    'aggregation_switch': 'AGG', 'access_device': 'ACC', 
+                    'load_balancer': 'LB'
+                };
+                const prefix = prefixes[type] || 'DEV';
+                return `${prefix}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+            }
+
+            generateRiskScore(device) {
+                const criticality = device.criticality;
+                const exposure = device.network_function === 'core_router' || device.network_function === 'firewall' ? 5 : 3;
+                const eoslScore = device.support_status === 'eosl' ? 5 : 1;
+                const vulnScore = device.vulnerabilities > 2 ? 4 : device.vulnerabilities > 0 ? 2 : 1;
+                
+                return Number((criticality * 0.3 + exposure * 0.25 + eoslScore * 0.25 + vulnScore * 0.2).toFixed(1));
+            }
+
+            getRiskLevel(score) {
+                if (score >= 4.0) return 'critical';
+                if (score >= 3.0) return 'high';
+                if (score >= 2.0) return 'medium';
+                return 'low';
+            }
+
+            generateDevice() {
+                const deviceType = this.deviceTypes[Math.floor(Math.random() * this.deviceTypes.length)];
+                const isEOSL = Math.random() > 0.6;
+                const vulnerabilities = Math.floor(Math.random() * 4);
+                
+                const device = {
+                    id: this.generateDeviceId(deviceType.type),
+                    hostname: `${deviceType.name.toLowerCase().replace(' ', '-')}-${Math.floor(Math.random() * 100) + 1}.demo.local`,
+                    device_type: deviceType.type,
+                    device_name: deviceType.name,
+                    location: this.locations[Math.floor(Math.random() * this.locations.length)],
+                    vendor: this.vendors[Math.floor(Math.random() * this.vendors.length)],
+                    model: `${deviceType.name} Model ${Math.floor(Math.random() * 5000) + 1000}`,
+                    criticality: deviceType.criticality,
+                    network_function: deviceType.type,
+                    support_status: isEOSL ? 'eosl' : Math.random() > 0.7 ? 'warning' : 'supported',
+                    eosl_date: isEOSL ? 
+                        new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] :
+                        new Date(Date.now() + Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    vulnerabilities: vulnerabilities,
+                    last_scan: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                };
+
+                device.risk_score = this.generateRiskScore(device);
+                device.risk_level = this.getRiskLevel(device.risk_score);
+
+                return device;
+            }
+
+            generateDataset(count = 25) {
+                return Array.from({ length: count }, () => this.generateDevice());
+            }
+        }
+
+        // Application State
+        let currentData = [];
+        let riskChart = null;
+        let eoslChart = null;
+
+        // DOM Elements
+        const elements = {
+            totalDevices: document.getElementById('totalDevices'),
+            eoslDevices: document.getElementById('eoslDevices'),
+            criticalDevices: document.getElementById('criticalDevices'),
+            avgRiskScore: document.getElementById('avgRiskScore'),
+            deviceList: document.getElementById('deviceList'),
+            riskAnalysis: document.getElementById('riskAnalysis'),
+            riskFilter: document.getElementById('riskFilter'),
+            typeFilter: document.getElementById('typeFilter')
+        };
+
+        // Initialize Application
+        function initApp() {
+            generateNewData();
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            elements.riskFilter.addEventListener('change', renderDevices);
+            elements.typeFilter.addEventListener('change', renderDevices);
+        }
+
+        function generateNewData() {
+            const generator = new EOSLDataGenerator();
+            currentData = generator.generateDataset(25);
+            updateDashboard();
+            renderDevices();
+            renderCharts();
+            renderRiskAnalysis();
+        }
+
+        function updateDashboard() {
+            const total = currentData.length;
+            const eosl = currentData.filter(d => d.support_status === 'eosl').length;
+            const critical = currentData.filter(d => d.risk_level === 'critical').length;
+            const avgScore = (currentData.reduce((sum, d) => sum + d.risk_score, 0) / total).toFixed(1);
+
+            elements.totalDevices.textContent = total;
+            elements.eoslDevices.textContent = eosl;
+            elements.criticalDevices.textContent = critical;
+            elements.avgRiskScore.textContent = avgScore;
+        }
+
+        function renderDevices() {
+            const riskFilter = elements.riskFilter.value;
+            const typeFilter = elements.typeFilter.value;
+
+            let filteredData = currentData.filter(device => {
+                const riskMatch = riskFilter === 'all' || 
+                    (riskFilter === 'critical' && device.risk_level === 'critical') ||
+                    (riskFilter === 'high' && (device.risk_level === 'critical' || device.risk_level === 'high')) ||
+                    (riskFilter === 'medium' && device.risk_level !== 'low');
+                
+                const typeMatch = typeFilter === 'all' || device.device_type === typeFilter;
+                
+                return riskMatch && typeMatch;
+            });
+
+            elements.deviceList.innerHTML = filteredData.map(device => `
+                <div class="risk-${device.risk_level} border-l-4 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="font-semibold text-gray-900 truncate">${device.hostname}</h3>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                    ${device.risk_level === 'critical' ? 'bg-red-100 text-red-800' : 
+                                      device.risk_level === 'high' ? 'bg-orange-100 text-orange-800' :
+                                      device.risk_level === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                                      'bg-green-100 text-green-800'}">
+                                    ${device.risk_level.toUpperCase()}
+                                </span>
+                                <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
+                                    Score: ${device.risk_score}
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+                                <div>
+                                    <span class="font-medium">Type:</span> ${device.device_name}
+                                </div>
+                                <div>
+                                    <span class="font-medium">Location:</span> ${device.location}
+                                </div>
+                                <div>
+                                    <span class="font-medium">Vendor:</span> ${device.vendor}
+                                </div>
+                                <div>
+                                    <span class="font-medium">Support:</span> 
+                                    <span class="${device.support_status === 'eosl' ? 'text-red-600 font-medium' : 
+                                                 device.support_status === 'warning' ? 'text-orange-600' : 
+                                                 'text-green-600'}">
+                                        ${device.support_status.toUpperCase()}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs text-gray-500">
+                                EOSL Date: ${device.eosl_date} | Last Scan: ${device.last_scan} | 
+                                Vulnerabilities: ${device.vulnerabilities}
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="showDeviceDetails('${device.id}')" 
+                                class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                                Details
+                            </button>
+                            <button onclick="addCompensatingControl('${device.id}')" 
+                                class="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                                Add Control
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCharts() {
+            // Risk Distribution Chart
+            const riskCtx = document.getElementById('riskChart').getContext('2d');
+            const riskCounts = {
+                critical: currentData.filter(d => d.risk_level === 'critical').length,
+                high: currentData.filter(d => d.risk_level === 'high').length,
+                medium: currentData.filter(d => d.risk_level === 'medium').length,
+                low: currentData.filter(d => d.risk_level === 'low').length
+            };
+
+            if (riskChart) riskChart.destroy();
+            riskChart = new Chart(riskCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Critical', 'High', 'Medium', 'Low'],
+                    datasets: [{
+                        data: [riskCounts.critical, riskCounts.high, riskCounts.medium, riskCounts.low],
+                        backgroundColor: ['#dc2626', '#ea580c', '#d97706', '#16a34a'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw} devices` } }
+                    }
+                }
+            });
+
+            // EOSL Timeline Chart
+            const eoslCtx = document.getElementById('eoslChart').getContext('2d');
+            const monthlyData = Array.from({ length: 6 }, (_, i) => {
+                const date = new Date();
+                date.setMonth(date.getMonth() + i);
+                return currentData.filter(d => {
+                    const eoslDate = new Date(d.eosl_date);
+                    return eoslDate.getMonth() === date.getMonth() && 
+                           eoslDate.getFullYear() === date.getFullYear();
+                }).length;
+            });
+
+            if (eoslChart) eoslChart.destroy();
+            eoslChart = new Chart(eoslCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Next Month', '+2 Months', '+3 Months', '+4 Months', '+5 Months', '+6 Months'],
+                    datasets: [{
+                        label: 'Devices Reaching EOSL',
+                        data: monthlyData,
+                        backgroundColor: '#ea580c',
+                        borderColor: '#dc2626',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Number of Devices' } }
+                    }
+                }
+            });
+        }
+
+        function renderRiskAnalysis() {
+            const criticalDevices = currentData.filter(d => d.risk_level === 'critical');
+            const eoslDevices = currentData.filter(d => d.support_status === 'eosl');
+            
+            elements.riskAnalysis.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-lg mb-3 text-red-700">Critical Risks (${criticalDevices.length})</h4>
+                        <div class="space-y-3">
+                            ${criticalDevices.slice(0, 3).map(device => `
+                                <div class="border-l-4 border-red-500 pl-4 py-2">
+                                    <div class="font-medium">${device.hostname}</div>
+                                    <div class="text-sm text-gray-600">${device.device_name} in ${device.location}</div>
+                                    <div class="text-xs text-red-600 mt-1">
+                                        ${device.support_status === 'eosl' ? '🚨 EOSL - No vendor support' : '⚠️ High risk with support'} | 
+                                        ${device.vulnerabilities} vulnerabilities
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-3 text-orange-700">Top Recommendations</h4>
+                        <div class="space-y-3">
+                            <div class="bg-blue-50 border border-blue-200 rounded p-3">
+                                <div class="font-medium">Immediate Actions</div>
+                                <div class="text-sm text-gray-700 mt-1">
+                                    • Isolate ${criticalDevices.length} critical devices with network segmentation<br>
+                                    • Prioritize replacement of EOSL core infrastructure<br>
+                                    • Implement compensating controls for high-risk systems
+                                </div>
+                            </div>
+                            <div class="bg-green-50 border border-green-200 rounded p-3">
+                                <div class="font-medium">Strategic Plan</div>
+                                <div class="text-sm text-gray-700 mt-1">
+                                    • Establish technology lifecycle management policy<br>
+                                    • Budget for phased replacement over next 18 months<br>
+                                    • Evaluate NFV/SDN for future architecture
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Mock functions for UI interactions
+        function showDeviceDetails(deviceId) {
+            const device = currentData.find(d => d.id === deviceId);
+            if (device) {
+                alert(`Device Details:\n\n` +
+                      `Hostname: ${device.hostname}\n` +
+                      `Type: ${device.device_name}\n` +
+                      `Location: ${device.location}\n` +
+                      `Risk Score: ${device.risk_score} (${device.risk_level})\n` +
+                      `Support Status: ${device.support_status}\n` +
+                      `EOSL Date: ${device.eosl_date}\n` +
+                      `Vulnerabilities: ${device.vulnerabilities}\n` +
+                      `Last Scan: ${device.last_scan}`);
+            }
+        }
+
+        function addCompensatingControl(deviceId) {
+            const device = currentData.find(d => d.id === deviceId);
+            if (device) {
+                const controlType = prompt(`Add compensating control for ${device.hostname}\n\nEnter control type:`, 'Firewall Rule');
+                if (controlType) {
+                    alert(`✅ ${controlType} added as compensating control for ${device.hostname}\n\nThis would be saved to database in production.`);
+                }
+            }
+        }
+
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
