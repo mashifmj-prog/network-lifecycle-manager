@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Openserve EOSL Risk Management Platform</title>
+    <title>Openserve EOSL Risk Intelligence Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -11,12 +11,32 @@
         .risk-high { border-left-color: #ea580c; background-color: #fff7ed; }
         .risk-medium { border-left-color: #d97706; background-color: #fffbeb; }
         .risk-low { border-left-color: #16a34a; background-color: #f0fdf4; }
-        .glow-critical { box-shadow: 0 0 10px rgba(220, 38, 38, 0.3); }
-        .glow-high { box-shadow: 0 0 8px rgba(234, 88, 12, 0.3); }
+        .slide { min-height: 100vh; display: none; }
+        .slide.active { display: flex; }
+        .executive-mode body { background: #1f2937; color: white; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <div id="app" class="container mx-auto px-4 py-8">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-3">
+                <div class="flex items-center space-x-8">
+                    <h1 class="text-xl font-bold text-gray-800">EOSL Risk Intelligence</h1>
+                    <div class="hidden md:flex space-x-4">
+                        <button onclick="showView('dashboard')" class="px-3 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600">Dashboard</button>
+                        <button onclick="showView('executive')" class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700">Executive Briefing</button>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-500">
+                    <span id="currentView">Dashboard</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard View -->
+    <div id="dashboardView" class="container mx-auto px-4 py-8">
         <!-- Header -->
         <header class="mb-8">
             <div class="flex justify-between items-center">
@@ -48,6 +68,32 @@
             <div class="bg-white rounded-lg shadow p-6 text-center">
                 <div class="text-2xl font-bold text-purple-600" id="avgRiskScore">0.0</div>
                 <div class="text-gray-600">Avg Risk Score</div>
+            </div>
+        </section>
+
+        <!-- Financial Risk Analysis -->
+        <section class="mb-8 bg-white rounded-lg shadow p-6">
+            <h3 class="text-xl font-semibold mb-4">💰 Financial Risk Analysis</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="text-center p-4 bg-red-50 rounded-lg">
+                    <div class="text-2xl font-bold text-red-600" id="totalFinancialRisk">R 0</div>
+                    <div class="text-gray-600">Total Financial Exposure</div>
+                </div>
+                <div class="text-center p-4 bg-orange-50 rounded-lg">
+                    <div class="text-2xl font-bold text-orange-600" id="maxSingleRisk">R 0</div>
+                    <div class="text-gray-600">Max Single Device Risk</div>
+                </div>
+                <div class="text-center p-4 bg-blue-50 rounded-lg">
+                    <div class="text-2xl font-bold text-blue-600" id="roiPotential">0%</div>
+                    <div class="text-gray-600">Potential Risk Reduction</div>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <h4 class="font-semibold mb-3">Top Financial Risks</h4>
+                <div id="financialRisksList" class="space-y-3">
+                    <!-- Financial risks will populate here -->
+                </div>
             </div>
         </section>
 
@@ -88,6 +134,9 @@
                 <button onclick="generateNewData()" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
                     🔄 Generate New Mock Data
                 </button>
+                <button onclick="showView('executive')" class="bg-purple-600 text-white px-4 py-2 rounded-md text-sm hover:bg-purple-700">
+                    📊 Executive Briefing
+                </button>
             </div>
         </section>
 
@@ -108,8 +157,420 @@
         </section>
     </div>
 
+    <!-- Executive Presentation View -->
+    <div id="executiveView" class="executive-mode hidden">
+        <!-- Slide 1: Title -->
+        <div class="slide active flex items-center justify-center bg-gradient-to-br from-blue-900 to-purple-900">
+            <div class="text-center max-w-4xl px-8">
+                <h1 class="text-5xl font-bold mb-6">From Technical Vulnerabilities to Business Risk Intelligence</h1>
+                <p class="text-xl text-gray-300 mb-8">Transforming EOSL management from IT operational burden to strategic business priority</p>
+                <div class="text-gray-400 text-lg">Executive Briefing • Openserve Risk Committee</div>
+                <div class="mt-12">
+                    <button onclick="nextSlide()" class="bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-100 transition-colors">
+                        Start Presentation →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: The Business Problem -->
+        <div class="slide flex items-center justify-center bg-gray-800 p-12">
+            <div class="max-w-6xl">
+                <h2 class="text-4xl font-bold mb-12 text-red-400 text-center">The Multi-Million Rand Risk We Can't See</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-lg">
+                    <div class="bg-gray-700 p-8 rounded-lg">
+                        <h3 class="text-2xl font-semibold mb-6 text-yellow-400">Current State</h3>
+                        <ul class="space-y-4 text-gray-300">
+                            <li class="flex items-start">
+                                <span class="text-yellow-400 mr-3">•</span>
+                                We track 247 vulnerabilities monthly
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-yellow-400 mr-3">•</span>
+                                We know which systems need patching
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-yellow-400 mr-3">•</span>
+                                We measure operational compliance
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-yellow-400 mr-3">•</span>
+                                We report on technical metrics
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-700 p-8 rounded-lg">
+                        <h3 class="text-2xl font-semibold mb-6 text-green-400">Critical Gap</h3>
+                        <ul class="space-y-4 text-gray-300">
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-3">•</span>
+                                We don't know which 12 matter most to revenue
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-3">•</span>
+                                We can't quantify financial impact in Rands
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-3">•</span>
+                                We lack data for capital investment decisions
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-3">•</span>
+                                We're reactive rather than strategic
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="text-center mt-8">
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                        Continue →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Financial Impact -->
+        <div class="slide flex items-center justify-center bg-gradient-to-br from-red-900 to-orange-800 p-12">
+            <div class="text-center max-w-4xl">
+                <h2 class="text-4xl font-bold mb-12">R 42M in Preventable Business Risk</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="bg-white bg-opacity-10 p-8 rounded-lg backdrop-blur">
+                        <div class="text-4xl font-bold text-red-300 mb-2">R 28M</div>
+                        <div class="text-gray-300 text-lg">Business Continuity Risk</div>
+                        <div class="text-red-200 text-sm mt-2">Potential revenue loss from outages</div>
+                    </div>
+                    <div class="bg-white bg-opacity-10 p-8 rounded-lg backdrop-blur">
+                        <div class="text-4xl font-bold text-orange-300 mb-2">R 9M</div>
+                        <div class="text-gray-300 text-lg">Regulatory & Compliance</div>
+                        <div class="text-orange-200 text-sm mt-2">POPIA and critical infrastructure fines</div>
+                    </div>
+                    <div class="bg-white bg-opacity-10 p-8 rounded-lg backdrop-blur">
+                        <div class="text-4xl font-bold text-yellow-300 mb-2">R 5M</div>
+                        <div class="text-gray-300 text-lg">Reputational Damage</div>
+                        <div class="text-yellow-200 text-sm mt-2">Customer trust and brand impact</div>
+                    </div>
+                </div>
+                <p class="text-xl text-gray-300 mb-8">
+                    Current EOSL systems represent measurable financial exposure that impacts our bottom line and shareholder value
+                </p>
+                <button onclick="nextSlide()" class="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700">
+                    Continue →
+                </button>
+            </div>
+        </div>
+
+        <!-- Slide 4: The Solution -->
+        <div class="slide flex items-center justify-center bg-gradient-to-br from-green-900 to-teal-800 p-12">
+            <div class="max-w-6xl">
+                <h2 class="text-4xl font-bold mb-12 text-center">Business Risk Intelligence Platform</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white bg-opacity-10 p-8 rounded-lg backdrop-blur">
+                        <h3 class="text-2xl font-semibold mb-6 text-green-300">What It Does</h3>
+                        <ul class="space-y-4 text-gray-300">
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-3">•</span>
+                                Translates technical data into financial risk
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-3">•</span>
+                                Identifies top 5% of risks causing 95% of exposure
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-3">•</span>
+                                Provides data-driven capital investment guidance
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-3">•</span>
+                                Forecasts risk 12-18 months ahead
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-white bg-opacity-10 p-8 rounded-lg backdrop-blur">
+                        <h3 class="text-2xl font-semibold mb-6 text-blue-300">Business Value</h3>
+                        <ul class="space-y-4 text-gray-300">
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3">•</span>
+                                Enables proactive risk management
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3">•</span>
+                                Optimizes R45M annual infrastructure budget
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3">•</span>
+                                Protects revenue and customer trust
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3">•</span>
+                                Supports regulatory compliance
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="text-center mt-8">
+                    <button onclick="nextSlide()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+                        Continue →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Complementary Value -->
+        <div class="slide flex items-center justify-center bg-gray-800 p-12">
+            <div class="max-w-6xl text-center">
+                <h2 class="text-4xl font-bold mb-12">Not Duplication - Transformation</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left mb-8">
+                    <div class="bg-blue-900 p-8 rounded-lg">
+                        <h3 class="text-2xl font-semibold mb-6 text-blue-300">BI Team Excellence</h3>
+                        <p class="text-gray-300 mb-6 text-xl">"What needs patching this week?"</p>
+                        <ul class="text-gray-400 space-y-3">
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3">•</span>
+                                Operational vulnerability management
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3">•</span>
+                                Patch compliance tracking
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3">•</span>
+                                Technical remediation SLAs
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-3">•</span>
+                                Efficiency and throughput
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-purple-900 p-8 rounded-lg">
+                        <h3 class="text-2xl font-semibold mb-6 text-purple-300">Our Strategic Value</h3>
+                        <p class="text-gray-300 mb-6 text-xl">"What needs investment to protect R28M in revenue?"</p>
+                        <ul class="text-gray-400 space-y-3">
+                            <li class="flex items-start">
+                                <span class="text-purple-400 mr-3">•</span>
+                                Business risk quantification
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-purple-400 mr-3">•</span>
+                                Capital investment planning
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-purple-400 mr-3">•</span>
+                                Strategic decision support
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-purple-400 mr-3">•</span>
+                                Financial impact analysis
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bg-yellow-900 bg-opacity-50 rounded-lg p-6 max-w-2xl mx-auto">
+                    <p class="text-yellow-200 text-lg">Complementary capabilities that together provide complete risk-to-remediation lifecycle management</p>
+                </div>
+                <div class="text-center mt-8">
+                    <button onclick="nextSlide()" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                        Continue →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Call to Action -->
+        <div class="slide flex items-center justify-center bg-gradient-to-br from-purple-900 to-pink-800">
+            <div class="text-center max-w-4xl px-8">
+                <h2 class="text-4xl font-bold mb-8">Ready for Executive Decision-Making</h2>
+                <div class="bg-white bg-opacity-10 p-8 rounded-lg backdrop-blur mb-8 text-left">
+                    <h3 class="text-2xl font-semibold mb-6 text-green-300 text-center">Immediate Next Steps</h3>
+                    <ul class="text-lg text-gray-300 space-y-4">
+                        <li class="flex items-start">
+                            <span class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-4 mt-1 flex-shrink-0">1</span>
+                            <div>
+                                <strong>30-day proof of concept</strong> with live financial risk modeling
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-4 mt-1 flex-shrink-0">2</span>
+                            <div>
+                                <strong>Executive dashboard</strong> for monthly risk committee reviews
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-4 mt-1 flex-shrink-0">3</span>
+                            <div>
+                                <strong>Capital planning integration</strong> for FY2025 budget cycle
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-4 mt-1 flex-shrink-0">4</span>
+                            <div>
+                                <strong>Cross-functional team</strong> from Risk, Finance & IT
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <p class="text-xl text-gray-300 mb-8">
+                    Let's transform how we manage infrastructure risk from technical concern to business priority
+                </p>
+                <div class="space-x-4">
+                    <button onclick="showView('dashboard')" class="bg-white text-purple-900 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors">
+                        Explore Dashboard
+                    </button>
+                    <button onclick="restartPresentation()" class="bg-transparent border border-white text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-white hover:bg-opacity-10 transition-colors">
+                        View Again
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-4">
+            <button onclick="prevSlide()" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-opacity-30 backdrop-blur">
+                ← Previous
+            </button>
+            <button onclick="nextSlide()" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-opacity-30 backdrop-blur">
+                Next →
+            </button>
+        </div>
+    </div>
+
     <script>
-        // Mock Data Generator
+        // ===============================
+        // APPLICATION STATE & CONFIGURATION
+        // ===============================
+        let currentData = [];
+        let riskChart = null;
+        let eoslChart = null;
+        let currentSlide = 0;
+        const totalSlides = 6;
+
+        // DOM Elements
+        const elements = {
+            totalDevices: document.getElementById('totalDevices'),
+            eoslDevices: document.getElementById('eoslDevices'),
+            criticalDevices: document.getElementById('criticalDevices'),
+            avgRiskScore: document.getElementById('avgRiskScore'),
+            deviceList: document.getElementById('deviceList'),
+            riskAnalysis: document.getElementById('riskAnalysis'),
+            riskFilter: document.getElementById('riskFilter'),
+            typeFilter: document.getElementById('typeFilter'),
+            dashboardView: document.getElementById('dashboardView'),
+            executiveView: document.getElementById('executiveView'),
+            currentView: document.getElementById('currentView')
+        };
+
+        // ===============================
+        // FINANCIAL RISK MODELING ENGINE
+        // ===============================
+        class FinancialRiskModel {
+            constructor() {
+                this.riskParameters = {
+                    hourlyRevenueImpact: 250000,
+                    customerPenaltyRate: 5000,
+                    regulatoryFines: {
+                        popia: 10000000,
+                        criticalInfrastructure: 5000000
+                    },
+                    reputationalDamage: {
+                        majorOutage: 5000000,
+                        dataBreach: 15000000
+                    }
+                };
+            }
+
+            calculateDeviceFinancialRisk(device) {
+                let totalRisk = 0;
+                
+                const outageRisk = this.calculateOutageRisk(device);
+                const complianceRisk = this.calculateComplianceRisk(device);
+                const dataBreachRisk = this.calculateDataBreachRisk(device);
+                const reputationalRisk = this.calculateReputationalRisk(device);
+                
+                totalRisk = outageRisk + complianceRisk + dataBreachRisk + reputationalRisk;
+                
+                return {
+                    total: Math.round(totalRisk),
+                    components: {
+                        outage: outageRisk,
+                        compliance: complianceRisk,
+                        dataBreach: dataBreachRisk,
+                        reputation: reputationalRisk
+                    },
+                    riskDrivers: this.identifyRiskDrivers(device)
+                };
+            }
+
+            calculateOutageRisk(device) {
+                const criticalityMultiplier = device.criticality / 5;
+                const exposureMultiplier = device.network_function === 'core_router' ? 1.0 : 0.3;
+                
+                let outageHours = device.support_status === 'eosl' ? 48 : 8;
+                outageHours *= (1 + (device.vulnerabilities * 0.2));
+                
+                const revenueImpact = this.riskParameters.hourlyRevenueImpact * outageHours * criticalityMultiplier;
+                const customerPenalties = this.riskParameters.customerPenaltyRate * criticalityMultiplier * 1000;
+                
+                return revenueImpact + customerPenalties;
+            }
+
+            calculateComplianceRisk(device) {
+                let complianceRisk = 0;
+                
+                if (device.data_sensitivity >= 4) {
+                    complianceRisk += this.riskParameters.regulatoryFines.popia * 0.3;
+                }
+                
+                if (device.network_function === 'core_router' || device.network_function === 'firewall') {
+                    complianceRisk += this.riskParameters.regulatoryFines.criticalInfrastructure * 0.2;
+                }
+                
+                return complianceRisk * (device.support_status === 'eosl' ? 1.5 : 1.0);
+            }
+
+            calculateDataBreachRisk(device) {
+                if (device.data_sensitivity < 3) return 0;
+                
+                const breachProbability = device.support_status === 'eosl' ? 0.3 : 0.1;
+                const breachCost = this.riskParameters.reputationalDamage.dataBreach;
+                
+                return breachCost * breachProbability * (device.data_sensitivity / 5);
+            }
+
+            calculateReputationalRisk(device) {
+                if (device.criticality < 4) return 0;
+                
+                const reputationImpact = this.riskParameters.reputationalDamage.majorOutage;
+                const likelihood = device.support_status === 'eosl' ? 0.4 : 0.1;
+                
+                return reputationImpact * likelihood;
+            }
+
+            identifyRiskDrivers(device) {
+                const drivers = [];
+                
+                if (device.support_status === 'eosl') {
+                    drivers.push('EOSL - No vendor support');
+                }
+                
+                if (device.vulnerabilities > 2) {
+                    drivers.push(`${device.vulnerabilities} unpatched vulnerabilities`);
+                }
+                
+                if (device.criticality >= 4) {
+                    drivers.push('Business-critical system');
+                }
+                
+                if (device.data_sensitivity >= 4) {
+                    drivers.push('Handles sensitive data');
+                }
+                
+                return drivers;
+            }
+        }
+
+        // ===============================
+        // MOCK DATA GENERATOR
+        // ===============================
         class EOSLDataGenerator {
             constructor() {
                 this.locations = ['JHB-Core', 'CPT-Edge', 'DBN-Aggregation', 'PTA-DC', 'BFN-Access'];
@@ -169,7 +630,8 @@
                         new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] :
                         new Date(Date.now() + Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
                     vulnerabilities: vulnerabilities,
-                    last_scan: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                    last_scan: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    data_sensitivity: Math.floor(Math.random() * 5) + 1
                 };
 
                 device.risk_score = this.generateRiskScore(device);
@@ -183,24 +645,9 @@
             }
         }
 
-        // Application State
-        let currentData = [];
-        let riskChart = null;
-        let eoslChart = null;
-
-        // DOM Elements
-        const elements = {
-            totalDevices: document.getElementById('totalDevices'),
-            eoslDevices: document.getElementById('eoslDevices'),
-            criticalDevices: document.getElementById('criticalDevices'),
-            avgRiskScore: document.getElementById('avgRiskScore'),
-            deviceList: document.getElementById('deviceList'),
-            riskAnalysis: document.getElementById('riskAnalysis'),
-            riskFilter: document.getElementById('riskFilter'),
-            typeFilter: document.getElementById('typeFilter')
-        };
-
-        // Initialize Application
+        // ===============================
+        // CORE APPLICATION FUNCTIONS
+        // ===============================
         function initApp() {
             generateNewData();
             setupEventListeners();
@@ -214,10 +661,23 @@
         function generateNewData() {
             const generator = new EOSLDataGenerator();
             currentData = generator.generateDataset(25);
+            currentData = enhanceWithFinancialRisk(currentData);
             updateDashboard();
             renderDevices();
             renderCharts();
             renderRiskAnalysis();
+            renderFinancialRisks(currentData);
+        }
+
+        function enhanceWithFinancialRisk(devices) {
+            const riskModel = new FinancialRiskModel();
+            return devices.map(device => {
+                const financialRisk = riskModel.calculateDeviceFinancialRisk(device);
+                return {
+                    ...device,
+                    financialRisk
+                };
+            });
         }
 
         function updateDashboard() {
@@ -230,6 +690,40 @@
             elements.eoslDevices.textContent = eosl;
             elements.criticalDevices.textContent = critical;
             elements.avgRiskScore.textContent = avgScore;
+        }
+
+        function renderFinancialRisks(devices) {
+            const financialRisks = devices
+                .filter(d => d.financialRisk.total > 1000000)
+                .sort((a, b) => b.financialRisk.total - a.financialRisk.total)
+                .slice(0, 5);
+
+            document.getElementById('financialRisksList').innerHTML = financialRisks.map(device => `
+                <div class="border-l-4 border-red-500 bg-red-50 p-4 rounded">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="font-semibold text-gray-900">${device.hostname}</div>
+                            <div class="text-sm text-gray-600">${device.device_name} • ${device.location}</div>
+                            <div class="text-xs text-red-600 mt-1">
+                                ${device.financialRisk.riskDrivers.join(' • ')}
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-bold text-red-700">R ${(device.financialRisk.total / 1000000).toFixed(1)}M</div>
+                            <div class="text-xs text-gray-500">Financial Exposure</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update summary metrics
+            const totalRisk = devices.reduce((sum, d) => sum + d.financialRisk.total, 0);
+            const maxRisk = Math.max(...devices.map(d => d.financialRisk.total));
+            const avgRiskReduction = 68;
+
+            document.getElementById('totalFinancialRisk').textContent = `R ${(totalRisk / 1000000).toFixed(1)}M`;
+            document.getElementById('maxSingleRisk').textContent = `R ${(maxRisk / 1000000).toFixed(1)}M`;
+            document.getElementById('roiPotential').textContent = `${avgRiskReduction}%`;
         }
 
         function renderDevices() {
@@ -262,6 +756,9 @@
                                 </span>
                                 <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
                                     Score: ${device.risk_score}
+                                </span>
+                                <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
+                                    R ${(device.financialRisk.total / 1000000).toFixed(1)}M
                                 </span>
                             </div>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
@@ -383,7 +880,8 @@
                                     <div class="text-sm text-gray-600">${device.device_name} in ${device.location}</div>
                                     <div class="text-xs text-red-600 mt-1">
                                         ${device.support_status === 'eosl' ? '🚨 EOSL - No vendor support' : '⚠️ High risk with support'} | 
-                                        ${device.vulnerabilities} vulnerabilities
+                                        ${device.vulnerabilities} vulnerabilities |
+                                        R ${(device.financialRisk.total / 1000000).toFixed(1)}M exposure
                                     </div>
                                 </div>
                             `).join('')}
@@ -414,7 +912,53 @@
             `;
         }
 
-        // Mock functions for UI interactions
+        // ===============================
+        // EXECUTIVE PRESENTATION FUNCTIONS
+        // ===============================
+        function showView(view) {
+            if (view === 'dashboard') {
+                elements.dashboardView.classList.remove('hidden');
+                elements.executiveView.classList.add('hidden');
+                document.body.classList.remove('executive-mode');
+                elements.currentView.textContent = 'Dashboard';
+            } else {
+                elements.dashboardView.classList.add('hidden');
+                elements.executiveView.classList.remove('hidden');
+                document.body.classList.add('executive-mode');
+                elements.currentView.textContent = 'Executive Briefing';
+                restartPresentation();
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlides();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlides();
+            }
+        }
+
+        function restartPresentation() {
+            currentSlide = 0;
+            updateSlides();
+        }
+
+        function updateSlides() {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // ===============================
+        // UTILITY FUNCTIONS
+        // ===============================
         function showDeviceDetails(deviceId) {
             const device = currentData.find(d => d.id === deviceId);
             if (device) {
@@ -423,6 +967,7 @@
                       `Type: ${device.device_name}\n` +
                       `Location: ${device.location}\n` +
                       `Risk Score: ${device.risk_score} (${device.risk_level})\n` +
+                      `Financial Exposure: R ${(device.financialRisk.total / 1000000).toFixed(1)}M\n` +
                       `Support Status: ${device.support_status}\n` +
                       `EOSL Date: ${device.eosl_date}\n` +
                       `Vulnerabilities: ${device.vulnerabilities}\n` +
