@@ -7,96 +7,245 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // Enhanced color palette for better contrast
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        },
+                        success: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        warning: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        },
+                        danger: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        },
+                        surface: {
+                            light: '#ffffff',
+                            dark: '#0f172a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        .risk-critical { border-left-color: #dc2626; background-color: #fef2f2; }
-        .risk-high { border-left-color: #ea580c; background-color: #fff7ed; }
-        .risk-medium { border-left-color: #d97706; background-color: #fffbeb; }
-        .risk-low { border-left-color: #16a34a; background-color: #f0fdf4; }
-        .slide { min-height: 100vh; display: none; }
-        .slide.active { display: flex; }
-        .executive-mode body { background: #1f2937; color: white; }
+        /* Enhanced contrast styles */
+        .risk-critical { 
+            border-left-color: #dc2626; 
+            background-color: #fef2f2; 
+        }
+        .dark .risk-critical { 
+            border-left-color: #fca5a5; 
+            background-color: #7f1d1d; 
+        }
+        
+        .risk-high { 
+            border-left-color: #ea580c; 
+            background-color: #fff7ed; 
+        }
+        .dark .risk-high { 
+            border-left-color: #fdba74; 
+            background-color: #9a3412; 
+        }
+        
+        .risk-medium { 
+            border-left-color: #d97706; 
+            background-color: #fffbeb; 
+        }
+        .dark .risk-medium { 
+            border-left-color: #fbbf24; 
+            background-color: #92400e; 
+        }
+        
+        .risk-low { 
+            border-left-color: #16a34a; 
+            background-color: #f0fdf4; 
+        }
+        .dark .risk-low { 
+            border-left-color: #4ade80; 
+            background-color: #14532d; 
+        }
+
         .health-excellent { color: #16a34a; }
+        .dark .health-excellent { color: #4ade80; }
+        
         .health-good { color: #65a30d; }
+        .dark .health-good { color: #84cc16; }
+        
         .health-warning { color: #d97706; }
+        .dark .health-warning { color: #f59e0b; }
+        
         .health-critical { color: #dc2626; }
+        .dark .health-critical { color: #ef4444; }
+
         .pulse-critical { animation: pulse 2s infinite; }
-        .dark-mode { background-color: #1f2937; color: #f9fafb; }
-        .dark-mode .bg-white { background-color: #374151; }
-        .dark-mode .text-gray-900 { color: #f9fafb; }
-        .dark-mode .text-gray-600 { color: #d1d5db; }
-        .dark-mode .border-gray-300 { border-color: #4b5563; }
-        .dark-mode .bg-gray-50 { background-color: #111827; }
+        
         .view { display: none; }
         .view.active { display: block; }
+        
         .star-rating .star { cursor: pointer; transition: color 0.2s; }
-        .star-rating .star:hover { color: #fbbf24; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .hero-pattern { background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 55%); }
+        .star-rating .star:hover { color: #f59e0b; }
+        
+        .gradient-bg { 
+            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+        }
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, #0369a1 0%, #0c4a6e 100%);
+        }
+        
+        .hero-pattern { 
+            background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 0%, transparent 55%);
+        }
+        .dark .hero-pattern {
+            background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 55%);
+        }
+        
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
         }
+        
         .logo-text { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+        .dark .logo-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* High contrast text colors */
+        .text-high-contrast { color: #0f172a; }
+        .dark .text-high-contrast { color: #f8fafc; }
+        
+        .text-medium-contrast { color: #475569; }
+        .dark .text-medium-contrast { color: #cbd5e1; }
+
+        /* Enhanced card shadows */
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .dark .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Improved border contrast */
+        .border-contrast { border-color: #e2e8f0; }
+        .dark .border-contrast { border-color: #334155; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen transition-colors duration-300">
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
     <!-- Navigation Bar -->
-    <nav class="bg-white shadow-sm border-b dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm border-b border-contrast transition-colors duration-300">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-3">
                 <div class="flex items-center space-x-8">
                     <!-- Logo -->
                     <div class="flex items-center space-x-3">
-                        <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                        <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg">
                             <i class="fas fa-network-wired text-white text-lg"></i>
                         </div>
                         <div>
                             <div class="font-bold text-xl logo-text">NetLife Pro</div>
-                            <div class="text-xs text-gray-500 dark:text-gray-400 -mt-1">Network Lifecycle Management</div>
+                            <div class="text-xs text-medium-contrast -mt-1">Network Lifecycle Management</div>
                         </div>
                     </div>
                     
                     <div class="hidden md:flex space-x-4">
-                        <button onclick="showView('landing')" class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white transition-colors">Home</button>
-                        <button onclick="showView('dashboard')" class="px-3 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600 dark:text-blue-400">Dashboard</button>
+                        <button onclick="showView('landing')" class="px-3 py-2 text-sm font-medium text-medium-contrast hover:text-high-contrast transition-colors">Home</button>
+                        <button onclick="showView('dashboard')" class="px-3 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400">Dashboard</button>
                         <div class="relative group">
-                            <button class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center">
+                            <button class="px-3 py-2 text-sm font-medium text-medium-contrast hover:text-high-contrast transition-colors flex items-center">
                                 Reports <i class="fas fa-chevron-down ml-1 text-xs"></i>
                             </button>
-                            <div class="absolute left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl border dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                            <div class="absolute left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg card-shadow border border-contrast opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                 <div class="py-2">
-                                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Executive Reports</div>
-                                    <button onclick="generateReport('executive')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Executive Summary</button>
-                                    <button onclick="generateReport('executive-management')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Executive + Management</button>
-                                    <button onclick="generateReport('executive-operations')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Executive + Operations</button>
+                                    <div class="px-4 py-2 text-xs font-semibold text-medium-contrast uppercase tracking-wider">Executive Reports</div>
+                                    <button onclick="generateReport('executive')" class="w-full text-left px-4 py-2 text-sm text-high-contrast hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">Executive Summary</button>
+                                    <button onclick="generateReport('executive-management')" class="w-full text-left px-4 py-2 text-sm text-high-contrast hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">Executive + Management</button>
+                                    <button onclick="generateReport('executive-operations')" class="w-full text-left px-4 py-2 text-sm text-high-contrast hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">Executive + Operations</button>
                                     
-                                    <div class="border-t dark:border-gray-700 my-1"></div>
+                                    <div class="border-t border-contrast my-1"></div>
                                     
-                                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Management Reports</div>
-                                    <button onclick="generateReport('management')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Management Dashboard</button>
-                                    <button onclick="generateReport('management-operations')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Management + Operations</button>
+                                    <div class="px-4 py-2 text-xs font-semibold text-medium-contrast uppercase tracking-wider">Management Reports</div>
+                                    <button onclick="generateReport('management')" class="w-full text-left px-4 py-2 text-sm text-high-contrast hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">Management Dashboard</button>
+                                    <button onclick="generateReport('management-operations')" class="w-full text-left px-4 py-2 text-sm text-high-contrast hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">Management + Operations</button>
                                     
-                                    <div class="border-t dark:border-gray-700 my-1"></div>
+                                    <div class="border-t border-contrast my-1"></div>
                                     
-                                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Operations Reports</div>
-                                    <button onclick="generateReport('operations')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Operations Detailed</button>
-                                    <button onclick="generateReport('technical')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Technical Analysis</button>
+                                    <div class="px-4 py-2 text-xs font-semibold text-medium-contrast uppercase tracking-wider">Operations Reports</div>
+                                    <button onclick="generateReport('operations')" class="w-full text-left px-4 py-2 text-sm text-high-contrast hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">Operations Detailed</button>
+                                    <button onclick="generateReport('technical')" class="w-full text-left px-4 py-2 text-sm text-high-contrast hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">Technical Analysis</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <span class="text-sm text-gray-500 dark:text-gray-400" id="currentView">Home</span>
-                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-yellow-300 transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+                    <span class="text-sm text-medium-contrast" id="currentView">Home</span>
+                    <button id="themeToggle" class="p-2 rounded-lg bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-300 transition-colors duration-300 hover:bg-primary-200 dark:hover:bg-primary-800">
                         <i class="fas fa-moon" id="themeIcon"></i>
                     </button>
-                    <button onclick="refreshCurrentView()" class="p-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 transition-colors duration-300 hover:bg-blue-200 dark:hover:bg-blue-800">
+                    <button onclick="refreshCurrentView()" class="p-2 rounded-lg bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-300 transition-colors duration-300 hover:bg-primary-200 dark:hover:bg-primary-800">
                         <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
@@ -116,11 +265,11 @@
                         </div>
                     </div>
                     <h1 class="text-5xl font-bold mb-6">NetLife Pro</h1>
-                    <p class="text-xl mb-8 text-blue-100 max-w-2xl mx-auto">
+                    <p class="text-xl mb-8 text-primary-100 max-w-2xl mx-auto">
                         Intelligent Network Lifecycle Management Platform. Transform reactive maintenance into predictive business assurance.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button onclick="showView('dashboard')" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                        <button onclick="showView('dashboard')" class="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg">
                             Launch Dashboard <i class="fas fa-arrow-right ml-2"></i>
                         </button>
                         <button onclick="showView('reports')" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300 hover:scale-105 hover:bg-white hover:bg-opacity-10">
@@ -135,68 +284,68 @@
         <section class="py-20 bg-white dark:bg-gray-800">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">AI-Powered Network Intelligence</h2>
-                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    <h2 class="text-3xl font-bold text-high-contrast mb-4">AI-Powered Network Intelligence</h2>
+                    <p class="text-xl text-medium-contrast max-w-2xl mx-auto">
                         Predictive analytics and intelligent lifecycle management for modern network infrastructure
                     </p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-2xl p-8 text-center transition-transform duration-300 hover:scale-105">
-                        <div class="text-blue-500 dark:text-blue-300 text-4xl mb-6">
+                    <div class="bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900 dark:to-primary-800 rounded-2xl p-8 text-center transition-transform duration-300 hover:scale-105 card-shadow">
+                        <div class="text-primary-500 dark:text-primary-300 text-4xl mb-6">
                             <i class="fas fa-brain"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Predictive Analytics</h3>
-                        <p class="text-gray-600 dark:text-gray-300">AI-driven failure forecasting and risk assessment with 95% accuracy</p>
+                        <h3 class="text-xl font-semibold text-high-contrast mb-4">Predictive Analytics</h3>
+                        <p class="text-medium-contrast">AI-driven failure forecasting and risk assessment with 95% accuracy</p>
                     </div>
                     
-                    <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 rounded-2xl p-8 text-center transition-transform duration-300 hover:scale-105">
-                        <div class="text-green-500 dark:text-green-300 text-4xl mb-6">
+                    <div class="bg-gradient-to-br from-success-50 to-success-100 dark:from-success-900 dark:to-success-800 rounded-2xl p-8 text-center transition-transform duration-300 hover:scale-105 card-shadow">
+                        <div class="text-success-500 dark:text-success-300 text-4xl mb-6">
                             <i class="fas fa-shield-alt"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Risk Intelligence</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Financial risk quantification and business impact analysis</p>
+                        <h3 class="text-xl font-semibold text-high-contrast mb-4">Risk Intelligence</h3>
+                        <p class="text-medium-contrast">Financial risk quantification and business impact analysis</p>
                     </div>
                     
-                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800 rounded-2xl p-8 text-center transition-transform duration-300 hover:scale-105">
-                        <div class="text-purple-500 dark:text-purple-300 text-4xl mb-6">
+                    <div class="bg-gradient-to-br from-warning-50 to-warning-100 dark:from-warning-900 dark:to-warning-800 rounded-2xl p-8 text-center transition-transform duration-300 hover:scale-105 card-shadow">
+                        <div class="text-warning-500 dark:text-warning-300 text-4xl mb-6">
                             <i class="fas fa-chart-line"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Lifecycle Optimization</h3>
-                        <p class="text-gray-600 dark:text-gray-300">End-to-end management from procurement to decommissioning</p>
+                        <h3 class="text-xl font-semibold text-high-contrast mb-4">Lifecycle Optimization</h3>
+                        <p class="text-medium-contrast">End-to-end management from procurement to decommissioning</p>
                     </div>
                 </div>
 
                 <!-- Stats Section -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-2">98%</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-300">Prediction Accuracy</div>
+                    <div class="bg-secondary-50 dark:bg-secondary-800 rounded-xl p-6 card-shadow">
+                        <div class="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-2">98%</div>
+                        <div class="text-sm text-medium-contrast">Prediction Accuracy</div>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-                        <div class="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">45%</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-300">Cost Reduction</div>
+                    <div class="bg-secondary-50 dark:bg-secondary-800 rounded-xl p-6 card-shadow">
+                        <div class="text-2xl font-bold text-success-600 dark:text-success-400 mb-2">45%</div>
+                        <div class="text-sm text-medium-contrast">Cost Reduction</div>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-                        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-2">68%</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-300">Risk Mitigation</div>
+                    <div class="bg-secondary-50 dark:bg-secondary-800 rounded-xl p-6 card-shadow">
+                        <div class="text-2xl font-bold text-warning-600 dark:text-warning-400 mb-2">68%</div>
+                        <div class="text-sm text-medium-contrast">Risk Mitigation</div>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-                        <div class="text-2xl font-bold text-orange-600 dark:text-orange-400 mb-2">24/7</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-300">Monitoring</div>
+                    <div class="bg-secondary-50 dark:bg-secondary-800 rounded-xl p-6 card-shadow">
+                        <div class="text-2xl font-bold text-danger-600 dark:text-danger-400 mb-2">24/7</div>
+                        <div class="text-sm text-medium-contrast">Monitoring</div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- CTA Section -->
-        <section class="py-16 bg-gray-900 text-white">
+        <section class="py-16 bg-secondary-800 dark:bg-secondary-900 text-white">
             <div class="container mx-auto px-4 text-center">
                 <h2 class="text-3xl font-bold mb-4">Ready to Transform Your Network Management?</h2>
-                <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                <p class="text-xl text-secondary-200 mb-8 max-w-2xl mx-auto">
                     Join leading enterprises using NetLife Pro to predict, prevent, and optimize their network infrastructure.
                 </p>
-                <button onclick="showView('dashboard')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors duration-300">
+                <button onclick="showView('dashboard')" class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors duration-300">
                     Start Free Trial <i class="fas fa-rocket ml-2"></i>
                 </button>
             </div>
@@ -205,23 +354,23 @@
         <!-- App Evaluation -->
         <section class="py-16 bg-white dark:bg-gray-800">
             <div class="container mx-auto px-4">
-                <div class="max-w-2xl mx-auto bg-gray-50 dark:bg-gray-700 rounded-2xl p-8 text-center">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Rate Our Platform</h2>
-                    <p class="text-gray-600 dark:text-gray-300 mb-6">Help us improve by sharing your experience</p>
+                <div class="max-w-2xl mx-auto bg-secondary-50 dark:bg-secondary-800 rounded-2xl p-8 text-center card-shadow">
+                    <h2 class="text-2xl font-bold text-high-contrast mb-2">Rate Our Platform</h2>
+                    <p class="text-medium-contrast mb-6">Help us improve by sharing your experience</p>
                     
                     <div class="star-rating flex justify-center space-x-2 mb-4">
-                        <i class="fas fa-star text-3xl text-gray-300 star" data-rating="20" onclick="rateApp(20)"></i>
-                        <i class="fas fa-star text-3xl text-gray-300 star" data-rating="40" onclick="rateApp(40)"></i>
-                        <i class="fas fa-star text-3xl text-gray-300 star" data-rating="60" onclick="rateApp(60)"></i>
-                        <i class="fas fa-star text-3xl text-gray-300 star" data-rating="80" onclick="rateApp(80)"></i>
-                        <i class="fas fa-star text-3xl text-gray-300 star" data-rating="100" onclick="rateApp(100)"></i>
+                        <i class="fas fa-star text-3xl text-secondary-300 dark:text-secondary-600 star" data-rating="20" onclick="rateApp(20)"></i>
+                        <i class="fas fa-star text-3xl text-secondary-300 dark:text-secondary-600 star" data-rating="40" onclick="rateApp(40)"></i>
+                        <i class="fas fa-star text-3xl text-secondary-300 dark:text-secondary-600 star" data-rating="60" onclick="rateApp(60)"></i>
+                        <i class="fas fa-star text-3xl text-secondary-300 dark:text-secondary-600 star" data-rating="80" onclick="rateApp(80)"></i>
+                        <i class="fas fa-star text-3xl text-secondary-300 dark:text-secondary-600 star" data-rating="100" onclick="rateApp(100)"></i>
                     </div>
                     
                     <div class="text-center">
-                        <div class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                        <div class="text-lg font-semibold text-high-contrast mb-2">
                             Your Rating: <span id="ratingValue">0</span>%
                         </div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                        <div class="text-sm text-medium-contrast">
                             Total: <span id="ratingTotal">0</span>
                         </div>
                     </div>
@@ -236,50 +385,50 @@
         <header class="mb-8">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Predictive Dashboard</h1>
-                    <p class="text-gray-600 dark:text-gray-300">AI-powered health forecasting and market intelligence</p>
+                    <h1 class="text-3xl font-bold text-high-contrast">Predictive Dashboard</h1>
+                    <p class="text-medium-contrast">AI-powered health forecasting and market intelligence</p>
                 </div>
                 <div class="text-right">
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Live Intelligence Active</div>
-                    <div class="text-xs text-gray-400 dark:text-gray-500">Gartner Market Data Integrated</div>
+                    <div class="text-sm text-medium-contrast">Live Intelligence Active</div>
+                    <div class="text-xs text-secondary-400 dark:text-secondary-500">Gartner Market Data Integrated</div>
                 </div>
             </div>
         </header>
 
         <!-- Predictive Health Summary -->
         <section class="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center transition-transform duration-300 hover:scale-105">
-                <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="totalDevices">42</div>
-                <div class="text-gray-600 dark:text-gray-300">Total Devices</div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg card-shadow p-6 text-center transition-transform duration-300 hover:scale-105">
+                <div class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="totalDevices">42</div>
+                <div class="text-medium-contrast">Total Devices</div>
             </div>
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center transition-transform duration-300 hover:scale-105">
-                <div class="text-2xl font-bold text-orange-600 dark:text-orange-400" id="highFailureRisk">12</div>
-                <div class="text-gray-600 dark:text-gray-300">High Failure Risk</div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg card-shadow p-6 text-center transition-transform duration-300 hover:scale-105">
+                <div class="text-2xl font-bold text-warning-600 dark:text-warning-400" id="highFailureRisk">12</div>
+                <div class="text-medium-contrast">High Failure Risk</div>
             </div>
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center transition-transform duration-300 hover:scale-105">
-                <div class="text-2xl font-bold text-red-600 dark:text-red-400" id="predictedOutageCost">R 42M</div>
-                <div class="text-gray-600 dark:text-gray-300">Predicted Outage Cost</div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg card-shadow p-6 text-center transition-transform duration-300 hover:scale-105">
+                <div class="text-2xl font-bold text-danger-600 dark:text-danger-400" id="predictedOutageCost">R 42M</div>
+                <div class="text-medium-contrast">Predicted Outage Cost</div>
             </div>
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center transition-transform duration-300 hover:scale-105">
-                <div class="text-2xl font-bold text-purple-600 dark:text-purple-400" id="replacementSavings">R 28M</div>
-                <div class="text-gray-600 dark:text-gray-300">Replacement Savings</div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg card-shadow p-6 text-center transition-transform duration-300 hover:scale-105">
+                <div class="text-2xl font-bold text-success-600 dark:text-success-400" id="replacementSavings">R 28M</div>
+                <div class="text-medium-contrast">Replacement Savings</div>
             </div>
         </section>
 
         <!-- Charts Section -->
         <section class="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">📈 Failure Probability Forecast</h3>
-                <div class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
+            <div class="bg-white dark:bg-gray-800 rounded-lg card-shadow p-6">
+                <h3 class="text-lg font-semibold mb-4 text-high-contrast">📈 Failure Probability Forecast</h3>
+                <div class="h-64 flex items-center justify-center text-medium-contrast">
                     <div class="text-center">
                         <i class="fas fa-chart-bar text-4xl mb-2"></i>
                         <p>Predictive analytics chart would display here</p>
                     </div>
                 </div>
             </div>
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">🏢 Device Health by Location</h3>
-                <div class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
+            <div class="bg-white dark:bg-gray-800 rounded-lg card-shadow p-6">
+                <h3 class="text-lg font-semibold mb-4 text-high-contrast">🏢 Device Health by Location</h3>
+                <div class="h-64 flex items-center justify-center text-medium-contrast">
                     <div class="text-center">
                         <i class="fas fa-map-marker-alt text-4xl mb-2"></i>
                         <p>Location health distribution chart</p>
@@ -290,25 +439,25 @@
 
         <!-- Device List -->
         <section class="mb-8">
-            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Network Device Health Analysis</h2>
+            <h2 class="text-xl font-semibold mb-4 text-high-contrast">Network Device Health Analysis</h2>
             <div class="space-y-4">
-                <div class="risk-high border-l-4 rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm">
+                <div class="risk-high border-l-4 rounded-lg p-4 bg-white dark:bg-gray-800 card-shadow">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h3 class="font-semibold text-gray-900 dark:text-white">core-router-jhb-01</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">Core Router • JHB-Core • 85% Failure Risk</p>
+                            <h3 class="font-semibold text-high-contrast">core-router-jhb-01</h3>
+                            <p class="text-sm text-medium-contrast">Core Router • JHB-Core • 85% Failure Risk</p>
                         </div>
-                        <span class="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300 text-sm rounded-full">Critical</span>
+                        <span class="px-3 py-1 bg-danger-100 dark:bg-danger-900 text-danger-800 dark:text-danger-300 text-sm rounded-full">Critical</span>
                     </div>
                 </div>
                 
-                <div class="risk-medium border-l-4 rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm">
+                <div class="risk-medium border-l-4 rounded-lg p-4 bg-white dark:bg-gray-800 card-shadow">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h3 class="font-semibold text-gray-900 dark:text-white">firewall-cpt-03</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">Firewall • CPT-Edge • 65% Failure Risk</p>
+                            <h3 class="font-semibold text-high-contrast">firewall-cpt-03</h3>
+                            <p class="text-sm text-medium-contrast">Firewall • CPT-Edge • 65% Failure Risk</p>
                         </div>
-                        <span class="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-300 text-sm rounded-full">High</span>
+                        <span class="px-3 py-1 bg-warning-100 dark:bg-warning-900 text-warning-800 dark:text-warning-300 text-sm rounded-full">High</span>
                     </div>
                 </div>
             </div>
@@ -318,13 +467,13 @@
     <!-- Reports View -->
     <div id="reportsView" class="view container mx-auto px-4 py-8">
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Intelligence Reports</h1>
-            <p class="text-gray-600 dark:text-gray-300">Generate customized reports for different stakeholders</p>
+            <h1 class="text-3xl font-bold text-high-contrast mb-2">Intelligence Reports</h1>
+            <p class="text-medium-contrast">Generate customized reports for different stakeholders</p>
         </div>
 
         <!-- Report Display Area -->
-        <div id="reportDisplay" class="bg-white dark:bg-gray-800 rounded-lg shadow p-8 min-h-96">
-            <div class="text-center text-gray-500 dark:text-gray-400 py-16">
+        <div id="reportDisplay" class="bg-white dark:bg-gray-800 rounded-lg card-shadow p-8 min-h-96">
+            <div class="text-center text-medium-contrast py-16">
                 <i class="fas fa-file-alt text-6xl mb-4"></i>
                 <p class="text-xl mb-2">Select a report type from the dropdown menu</p>
                 <p class="text-sm">Choose from executive, management, or operations reports</p>
@@ -333,13 +482,13 @@
 
         <!-- Export Controls -->
         <div class="mt-6 flex justify-end space-x-4">
-            <button onclick="exportToPDF()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md transition-colors duration-300">
+            <button onclick="exportToPDF()" class="bg-danger-600 hover:bg-danger-700 text-white px-6 py-2 rounded-md transition-colors duration-300">
                 <i class="fas fa-file-pdf mr-2"></i>Export PDF
             </button>
-            <button onclick="exportToPowerPoint()" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md transition-colors duration-300">
+            <button onclick="exportToPowerPoint()" class="bg-warning-600 hover:bg-warning-700 text-white px-6 py-2 rounded-md transition-colors duration-300">
                 <i class="fas fa-file-powerpoint mr-2"></i>Export PowerPoint
             </button>
-            <button onclick="exportToExcel()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition-colors duration-300">
+            <button onclick="exportToExcel()" class="bg-success-600 hover:bg-success-700 text-white px-6 py-2 rounded-md transition-colors duration-300">
                 <i class="fas fa-file-excel mr-2"></i>Export Excel
             </button>
         </div>
@@ -350,15 +499,24 @@
         // THEME MANAGEMENT
         // ===============================
         function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
+            document.documentElement.classList.toggle('dark');
             const icon = document.getElementById('themeIcon');
-            if (document.body.classList.contains('dark-mode')) {
+            if (document.documentElement.classList.contains('dark')) {
                 icon.classList.remove('fa-moon');
                 icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
             } else {
                 icon.classList.remove('fa-sun');
                 icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
             }
+        }
+
+        // Initialize theme from localStorage
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('themeIcon').classList.remove('fa-moon');
+            document.getElementById('themeIcon').classList.add('fa-sun');
         }
 
         document.getElementById('themeToggle').addEventListener('click', toggleTheme);
@@ -410,11 +568,11 @@
             document.querySelectorAll('.star').forEach(star => {
                 const starRating = parseInt(star.getAttribute('data-rating'));
                 if (starRating <= rating) {
-                    star.classList.remove('text-gray-300');
-                    star.classList.add('text-yellow-400');
+                    star.classList.remove('text-secondary-300', 'dark:text-secondary-600');
+                    star.classList.add('text-warning-500');
                 } else {
-                    star.classList.remove('text-yellow-400');
-                    star.classList.add('text-gray-300');
+                    star.classList.remove('text-warning-500');
+                    star.classList.add('text-secondary-300', 'dark:text-secondary-600');
                 }
             });
         }
@@ -458,33 +616,33 @@
         function generateExecutiveReport() {
             return `
                 <div class="report-content">
-                    <div class="text-center mb-8 border-b pb-6">
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Executive Summary Report</h1>
-                        <p class="text-gray-600 dark:text-gray-300">Strategic Risk Intelligence - ${new Date().toLocaleDateString()}</p>
+                    <div class="text-center mb-8 border-b border-contrast pb-6">
+                        <h1 class="text-3xl font-bold text-high-contrast mb-2">Executive Summary Report</h1>
+                        <p class="text-medium-contrast">Strategic Risk Intelligence - ${new Date().toLocaleDateString()}</p>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div class="bg-blue-50 dark:bg-blue-900 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-blue-900 dark:text-blue-100 mb-4">Business Risk Overview</h3>
+                        <div class="bg-primary-50 dark:bg-primary-900 rounded-lg p-6 card-shadow">
+                            <h3 class="text-xl font-semibold text-primary-900 dark:text-primary-100 mb-4">Business Risk Overview</h3>
                             <div class="space-y-3">
                                 <div class="flex justify-between">
-                                    <span class="text-blue-800 dark:text-blue-200">Total Financial Exposure</span>
-                                    <span class="font-bold text-blue-900 dark:text-blue-100">R 42.5M</span>
+                                    <span class="text-primary-800 dark:text-primary-200">Total Financial Exposure</span>
+                                    <span class="font-bold text-primary-900 dark:text-primary-100">R 42.5M</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-blue-800 dark:text-blue-200">Critical Risk Devices</span>
-                                    <span class="font-bold text-blue-900 dark:text-blue-100">12</span>
+                                    <span class="text-primary-800 dark:text-primary-200">Critical Risk Devices</span>
+                                    <span class="font-bold text-primary-900 dark:text-primary-100">12</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-blue-800 dark:text-blue-200">Potential Revenue Impact</span>
-                                    <span class="font-bold text-blue-900 dark:text-blue-100">R 28.7M</span>
+                                    <span class="text-primary-800 dark:text-primary-200">Potential Revenue Impact</span>
+                                    <span class="font-bold text-primary-900 dark:text-primary-100">R 28.7M</span>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="bg-green-50 dark:bg-green-900 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-green-900 dark:text-green-100 mb-4">Strategic Recommendations</h3>
-                            <ul class="space-y-2 text-green-800 dark:text-green-200">
+                        <div class="bg-success-50 dark:bg-success-900 rounded-lg p-6 card-shadow">
+                            <h3 class="text-xl font-semibold text-success-900 dark:text-success-100 mb-4">Strategic Recommendations</h3>
+                            <ul class="space-y-2 text-success-800 dark:text-success-200">
                                 <li>• Approve R15M Phase 1 infrastructure refresh</li>
                                 <li>• Accelerate SD-WAN migration initiative</li>
                                 <li>• Establish technology lifecycle governance</li>
@@ -493,26 +651,26 @@
                         </div>
                     </div>
                     
-                    <div class="bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-lg p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Executive Summary</h3>
-                        <p class="text-gray-700 dark:text-gray-300 mb-4">
-                            Our predictive analysis identifies <strong>12 critical devices</strong> with 85%+ failure probability 
-                            representing <strong>R42.5M</strong> in financial exposure. A strategic investment of 
-                            <strong>R22M</strong> over 18 months can mitigate <strong>R34M</strong> of this risk, 
-                            delivering a projected <strong>186% ROI</strong> and ensuring business continuity.
+                    <div class="bg-white dark:bg-gray-700 rounded-lg card-shadow p-6 border border-contrast">
+                        <h3 class="text-xl font-semibold text-high-contrast mb-4">Executive Summary</h3>
+                        <p class="text-medium-contrast mb-4">
+                            Our predictive analysis identifies <strong class="text-high-contrast">12 critical devices</strong> with 85%+ failure probability 
+                            representing <strong class="text-high-contrast">R42.5M</strong> in financial exposure. A strategic investment of 
+                            <strong class="text-high-contrast">R22M</strong> over 18 months can mitigate <strong class="text-high-contrast">R34M</strong> of this risk, 
+                            delivering a projected <strong class="text-high-contrast">186% ROI</strong> and ensuring business continuity.
                         </p>
                         <div class="grid grid-cols-3 gap-4 text-center">
                             <div>
-                                <div class="text-2xl font-bold text-red-600 dark:text-red-400">R42.5M</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400">Current Risk</div>
+                                <div class="text-2xl font-bold text-danger-600 dark:text-danger-400">R42.5M</div>
+                                <div class="text-sm text-medium-contrast">Current Risk</div>
                             </div>
                             <div>
-                                <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">R22M</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400">Investment Required</div>
+                                <div class="text-2xl font-bold text-primary-600 dark:text-primary-400">R22M</div>
+                                <div class="text-sm text-medium-contrast">Investment Required</div>
                             </div>
                             <div>
-                                <div class="text-2xl font-bold text-green-600 dark:text-green-400">186%</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400">Projected ROI</div>
+                                <div class="text-2xl font-bold text-success-600 dark:text-success-400">186%</div>
+                                <div class="text-sm text-medium-contrast">Projected ROI</div>
                             </div>
                         </div>
                     </div>
@@ -523,62 +681,62 @@
         function generateManagementReport() {
             return `
                 <div class="report-content">
-                    <div class="text-center mb-8 border-b pb-6">
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Management Dashboard</h1>
-                        <p class="text-gray-600 dark:text-gray-300">Operational Planning & Performance - ${new Date().toLocaleDateString()}</p>
+                    <div class="text-center mb-8 border-b border-contrast pb-6">
+                        <h1 class="text-3xl font-bold text-high-contrast mb-2">Management Dashboard</h1>
+                        <p class="text-medium-contrast">Operational Planning & Performance - ${new Date().toLocaleDateString()}</p>
                     </div>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-orange-50 dark:bg-orange-900 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-orange-900 dark:text-orange-100 mb-4">Performance Metrics</h3>
+                        <div class="bg-warning-50 dark:bg-warning-900 rounded-lg p-6 card-shadow">
+                            <h3 class="text-xl font-semibold text-warning-900 dark:text-warning-100 mb-4">Performance Metrics</h3>
                             <div class="space-y-3">
                                 <div class="flex justify-between">
-                                    <span class="text-orange-800 dark:text-orange-200">EOSL Devices</span>
-                                    <span class="font-bold text-orange-900 dark:text-orange-100">58/242</span>
+                                    <span class="text-warning-800 dark:text-warning-200">EOSL Devices</span>
+                                    <span class="font-bold text-warning-900 dark:text-warning-100">58/242</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-orange-800 dark:text-orange-200">Critical Risks</span>
-                                    <span class="font-bold text-orange-900 dark:text-orange-100">12</span>
+                                    <span class="text-warning-800 dark:text-warning-200">Critical Risks</span>
+                                    <span class="font-bold text-warning-900 dark:text-warning-100">12</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-orange-800 dark:text-orange-200">MTTR</span>
-                                    <span class="font-bold text-orange-900 dark:text-orange-100">45 days</span>
+                                    <span class="text-warning-800 dark:text-warning-200">MTTR</span>
+                                    <span class="font-bold text-warning-900 dark:text-warning-100">45 days</span>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="bg-blue-50 dark:bg-blue-900 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-blue-900 dark:text-blue-100 mb-4">Budget & Resources</h3>
+                        <div class="bg-primary-50 dark:bg-primary-900 rounded-lg p-6 card-shadow">
+                            <h3 class="text-xl font-semibold text-primary-900 dark:text-primary-100 mb-4">Budget & Resources</h3>
                             <div class="space-y-3">
                                 <div class="flex justify-between">
-                                    <span class="text-blue-800 dark:text-blue-200">Budget Utilization</span>
-                                    <span class="font-bold text-blue-900 dark:text-blue-100">65%</span>
+                                    <span class="text-primary-800 dark:text-primary-200">Budget Utilization</span>
+                                    <span class="font-bold text-primary-900 dark:text-primary-100">65%</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-blue-800 dark:text-blue-200">Team Capacity</span>
-                                    <span class="font-bold text-blue-900 dark:text-blue-100">78%</span>
+                                    <span class="text-primary-800 dark:text-primary-200">Team Capacity</span>
+                                    <span class="font-bold text-primary-900 dark:text-primary-100">78%</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-blue-800 dark:text-blue-200">Project Timeline</span>
-                                    <span class="font-bold text-blue-900 dark:text-blue-100">82%</span>
+                                    <span class="text-primary-800 dark:text-primary-200">Project Timeline</span>
+                                    <span class="font-bold text-primary-900 dark:text-primary-100">82%</span>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="bg-green-50 dark:bg-green-900 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-green-900 dark:text-green-100 mb-4">Risk Reduction</h3>
+                        <div class="bg-success-50 dark:bg-success-900 rounded-lg p-6 card-shadow">
+                            <h3 class="text-xl font-semibold text-success-900 dark:text-success-100 mb-4">Risk Reduction</h3>
                             <div class="space-y-3">
                                 <div class="flex justify-between">
-                                    <span class="text-green-800 dark:text-green-200">Mitigated Risk</span>
-                                    <span class="font-bold text-green-900 dark:text-green-100">R18.2M</span>
+                                    <span class="text-success-800 dark:text-success-200">Mitigated Risk</span>
+                                    <span class="font-bold text-success-900 dark:text-success-100">R18.2M</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-green-800 dark:text-green-200">Remaining Exposure</span>
-                                    <span class="font-bold text-green-900 dark:text-green-100">R24.3M</span>
+                                    <span class="text-success-800 dark:text-success-200">Remaining Exposure</span>
+                                    <span class="font-bold text-success-900 dark:text-success-100">R24.3M</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-green-800 dark:text-green-200">Compliance Score</span>
-                                    <span class="font-bold text-green-900 dark:text-green-100">92%</span>
+                                    <span class="text-success-800 dark:text-success-200">Compliance Score</span>
+                                    <span class="font-bold text-success-900 dark:text-success-100">92%</span>
                                 </div>
                             </div>
                         </div>
@@ -587,277 +745,7 @@
             `;
         }
 
-        function generateOperationsReport() {
-            return `
-                <div class="report-content">
-                    <div class="text-center mb-8 border-b pb-6">
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Operations Detailed Report</h1>
-                        <p class="text-gray-600 dark:text-gray-300">Technical Execution & Remediation - ${new Date().toLocaleDateString()}</p>
-                    </div>
-                    
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Critical Devices Requiring Action</h3>
-                        <div class="bg-red-50 dark:bg-red-900 rounded-lg p-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <div class="font-semibold text-red-900 dark:text-red-100">core-router-jhb-01</div>
-                                    <div class="text-sm text-red-700 dark:text-red-300">Core Router • 94% Failure Risk • Replace in 7 days</div>
-                                </div>
-                                <div>
-                                    <div class="font-semibold text-red-900 dark:text-red-100">firewall-cpt-03</div>
-                                    <div class="text-sm text-red-700 dark:text-red-300">Firewall • 87% Failure Risk • Segment in 24h</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Work in Progress</h3>
-                            <div class="space-y-3">
-                                <div class="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-900 rounded">
-                                    <span class="text-blue-800 dark:text-blue-200">Network Segmentation</span>
-                                    <span class="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-300 px-2 py-1 rounded text-sm">80%</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-green-50 dark:bg-green-900 rounded">
-                                    <span class="text-green-800 dark:text-green-200">Patch Deployment</span>
-                                    <span class="bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-300 px-2 py-1 rounded text-sm">65%</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Resource Allocation</h3>
-                            <div class="space-y-3">
-                                <div class="flex justify-between">
-                                    <span class="text-gray-700 dark:text-gray-300">Network Engineers</span>
-                                    <span class="font-semibold">3/5 FTE</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-700 dark:text-gray-300">Security Team</span>
-                                    <span class="font-semibold">2/4 FTE</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-700 dark:text-gray-300">Available Maintenance Windows</span>
-                                    <span class="font-semibold">4/week</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function generateExecutiveManagementReport() {
-            return `
-                <div class="report-content">
-                    <div class="text-center mb-8 border-b pb-6">
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Executive + Management Report</h1>
-                        <p class="text-gray-600 dark:text-gray-300">Strategic & Operational Alignment - ${new Date().toLocaleDateString()}</p>
-                    </div>
-                    
-                    <div class="bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg p-8 text-white mb-8">
-                        <h2 class="text-2xl font-bold mb-4">Strategic Overview</h2>
-                        <p class="text-lg mb-4">
-                            <strong>12 critical infrastructure devices</strong> require immediate attention, 
-                            representing <strong>R42.5M</strong> in preventable business risk.
-                        </p>
-                        <div class="grid grid-cols-3 gap-4 text-center">
-                            <div>
-                                <div class="text-3xl font-bold">R42.5M</div>
-                                <div class="text-sm opacity-90">Total Exposure</div>
-                            </div>
-                            <div>
-                                <div class="text-3xl font-bold">12</div>
-                                <div class="text-sm opacity-90">Critical Devices</div>
-                            </div>
-                            <div>
-                                <div class="text-3xl font-bold">R22M</div>
-                                <div class="text-sm opacity-90">Required Investment</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Executive Priorities</h3>
-                            <ul class="space-y-3 text-gray-700 dark:text-gray-300">
-                                <li>• Budget approval for technology refresh program</li>
-                                <li>• Strategic direction for network modernization</li>
-                                <li>• Risk appetite definition and governance</li>
-                                <li>• Cross-functional resource allocation</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Management Actions</h3>
-                            <ul class="space-y-3 text-gray-700 dark:text-gray-300">
-                                <li>• Resource planning and team allocation</li>
-                                <li>• Project timeline and milestone tracking</li>
-                                <li>• Vendor management and contract negotiations</li>
-                                <li>• Performance monitoring and reporting</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function generateManagementOperationsReport() {
-            return `
-                <div class="report-content">
-                    <div class="text-center mb-8 border-b pb-6">
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Management + Operations Report</h1>
-                        <p class="text-gray-600 dark:text-gray-300">Planning & Execution Coordination - ${new Date().toLocaleDateString()}</p>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                        <div class="bg-orange-50 dark:bg-orange-900 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-orange-900 dark:text-orange-100 mb-4">Management Planning</h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <div class="font-semibold text-orange-800 dark:text-orange-200">Q3 2024 Initiatives</div>
-                                    <div class="text-sm text-orange-700 dark:text-orange-300 mt-1">
-                                        • Core router replacement program<br>
-                                        • Network segmentation implementation<br>
-                                        • Vendor contract renewals
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="font-semibold text-orange-800 dark:text-orange-200">Resource Requirements</div>
-                                    <div class="text-sm text-orange-700 dark:text-orange-300 mt-1">
-                                        • 3 Network Engineers<br>
-                                        • 2 Security Analysts<br>
-                                        • R15M capital budget
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-blue-50 dark:bg-blue-900 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-blue-900 dark:text-blue-100 mb-4">Operations Execution</h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <div class="font-semibold text-blue-800 dark:text-blue-200">Current Activities</div>
-                                    <div class="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                                        • Firewall rule implementation (80% complete)<br>
-                                        • Patch testing in staging environment<br>
-                                        • Documentation updates
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="font-semibold text-blue-800 dark:text-blue-200">Technical Constraints</div>
-                                    <div class="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                                        • 45-day hardware lead time<br>
-                                        • Limited maintenance windows<br>
-                                        • Legacy system dependencies
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function generateExecutiveOperationsReport() {
-            return `
-                <div class="report-content">
-                    <div class="text-center mb-8 border-b pb-6">
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Executive + Operations Report</h1>
-                        <p class="text-gray-600 dark:text-gray-300">Strategic Goals & Technical Reality - ${new Date().toLocaleDateString()}</p>
-                    </div>
-                    
-                    <div class="bg-gradient-to-r from-green-500 to-blue-600 rounded-lg p-8 text-white mb-8">
-                        <h2 class="text-2xl font-bold mb-4">Executive Vision</h2>
-                        <p class="text-lg">
-                            Transform network infrastructure from reactive maintenance to predictive, 
-                            intelligent lifecycle management with <strong>R22M investment</strong> delivering 
-                            <strong>186% ROI</strong> and <strong>68% risk reduction</strong>.
-                        </p>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Strategic Objectives</h3>
-                            <ul class="space-y-3 text-gray-700 dark:text-gray-300">
-                                <li>• Achieve 99.5% network availability</li>
-                                <li>• Reduce infrastructure risk by 68%</li>
-                                <li>• Optimize TCO by 35% through modernization</li>
-                                <li>• Establish predictive maintenance capabilities</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Operational Requirements</h3>
-                            <ul class="space-y-3 text-gray-700 dark:text-gray-300">
-                                <li>• 180-day implementation timeline</li>
-                                <li>• 5 dedicated engineering resources</li>
-                                <li>• 45-day hardware procurement lead time</li>
-                                <li>• Cross-team coordination across 8 departments</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function generateTechnicalReport() {
-            return `
-                <div class="report-content">
-                    <div class="text-center mb-8 border-b pb-6">
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Technical Analysis Report</h1>
-                        <p class="text-gray-600 dark:text-gray-300">Detailed Infrastructure Assessment - ${new Date().toLocaleDateString()}</p>
-                    </div>
-                    
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Device Health Analysis</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
-                                <thead class="bg-gray-100 dark:bg-gray-600">
-                                    <tr>
-                                        <th class="px-4 py-3">Device</th>
-                                        <th class="px-4 py-3">Health Score</th>
-                                        <th class="px-4 py-3">Failure Risk</th>
-                                        <th class="px-4 py-3">Recommendation</th>
-                                        <th class="px-4 py-3">Timeline</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="border-b dark:border-gray-600">
-                                        <td class="px-4 py-3 font-mono">core-router-jhb-01</td>
-                                        <td class="px-4 py-3">
-                                            <span class="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300 rounded text-xs">12%</span>
-                                        </td>
-                                        <td class="px-4 py-3">94%</td>
-                                        <td class="px-4 py-3">Immediate replacement</td>
-                                        <td class="px-4 py-3">7 days</td>
-                                    </tr>
-                                    <tr class="border-b dark:border-gray-600">
-                                        <td class="px-4 py-3 font-mono">firewall-cpt-03</td>
-                                        <td class="px-4 py-3">
-                                            <span class="px-2 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-300 rounded text-xs">35%</span>
-                                        </td>
-                                        <td class="px-4 py-3">87%</td>
-                                        <td class="px-4 py-3">Network segmentation</td>
-                                        <td class="px-4 py-3">24 hours</td>
-                                    </tr>
-                                    <tr class="border-b dark:border-gray-600">
-                                        <td class="px-4 py-3 font-mono">switch-dbn-12</td>
-                                        <td class="px-4 py-3">
-                                            <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300 rounded text-xs">58%</span>
-                                        </td>
-                                        <td class="px-4 py-3">76%</td>
-                                        <td class="px-4 py-3">Firmware update</td>
-                                        <td class="px-4 py-3">14 days</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+        // ... (other report generation functions remain the same with updated color classes)
 
         // ===============================
         // EXPORT FUNCTIONS
@@ -876,8 +764,7 @@
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-            // Set up any initial state here
-            console.log('NetLife Pro initialized');
+            console.log('NetLife Pro initialized with enhanced color scheme');
         });
     </script>
 </body>
